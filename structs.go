@@ -7,7 +7,12 @@ type Target struct {
 }
 
 type AlertJSON struct {
-	Type string
+	Type                       string
+	SlackIncomingWebhookConfig SlackIncomingWebhookConfigJSON
+}
+
+type SlackIncomingWebhookConfigJSON struct {
+	URL string
 }
 
 type TargetJSON struct {
@@ -19,6 +24,7 @@ type TargetJSON struct {
 }
 
 type ConfigJSON struct {
+	Name    string
 	Alerts  []AlertJSON
 	Targets []TargetJSON
 }

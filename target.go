@@ -12,7 +12,7 @@ func (t TargetJSON) toTarget() *Target {
 	return &Target{
 		Name:   t.name(),
 		URL:    t.url(),
-		Online: false,
+		Online: true, // asume everything is online by default
 	}
 }
 
