@@ -1,0 +1,20 @@
+{
+  "name": "Example",
+  "alerts": [
+    {
+      type: "slack-incoming-webhook",
+      slackIncomingWebhookConfig: {
+        url: "https://hooks.slack.com/services/",
+      }
+    },
+  ],
+  "targets": [
+    {
+      "url": "http://www.example.com/"
+    },
+    {
+      "valueFrom": "env",
+      "key": "EXAMPLE_URL",
+    },
+  ]
+}
