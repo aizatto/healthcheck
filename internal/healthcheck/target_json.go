@@ -1,14 +1,8 @@
-package main
+package healthcheck
 
-import (
-	"log"
-	"net/http"
-	"os"
+import "os"
 
-	"github.com/pkg/errors"
-)
-
-func (t TargetJSON) toTarget() *Target {
+func (t TargetJSON) ToTarget() *Target {
 	return &Target{
 		Name:   t.name(),
 		URL:    t.url(),
@@ -39,15 +33,4 @@ func (t TargetJSON) url() string {
 	}
 
 	return url
-}
-
-func (t *Target) healthcheck() error {
-	resp, err := http.Get(t.URL)
-	if err != nil {
-		return errors.Wrapf(err, "%s Failed: %s", t.Name, t.URL)
-	}
-
-	log.Printf("%s (%d): %s\n", t.Name, resp.StatusCode, t.URL)
-
-	return nil
 }
