@@ -2,6 +2,9 @@
   "name": "Example",
   "alerts": [
     {
+      type: "stdout",
+    },
+    {
       type: "slack-incoming-webhook",
       slackIncomingWebhookConfig: {
         url: "https://hooks.slack.com/services/",

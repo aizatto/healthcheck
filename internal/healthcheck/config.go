@@ -18,38 +18,43 @@ type ConfigJSON struct {
 
 func (c ConfigJSON) offline(t TargetInterface, targeterr error) {
 	for _, alert := range c.Alerts {
-		var err error
+		message := fmt.Sprintf(
+			"%s: %s is offline. %s",
+			c.Name,
+			t.name(),
+			targeterr,
+		)
+
 		switch alert.Type {
 		case "slack-incoming-webhook":
-			err = alert.SlackIncomingWebhookConfig.fire(
-				fmt.Sprintf(
-					"%s: %s is offline. %s",
-					c.Name,
-					t.name(),
-					targeterr,
-				),
-			)
-		}
+			err := alert.SlackIncomingWebhookConfig.fire(message)
 
-		if err != nil {
-			log.Println(err)
-			// TODO: consider disabling alert?
+			if err != nil {
+				log.Println(err)
+			}
+		case "stdout":
+			log.Println(message)
+		default:
+			log.Printf("unsupported alert type: %s", alert.Type)
 		}
 	}
 }
 
 func (c ConfigJSON) online(t TargetInterface) {
 	for _, alert := range c.Alerts {
-		var err error
+		message := fmt.Sprintf("%s: %s is online", c.Name, t.name())
+
 		switch alert.Type {
 		case "slack-incoming-webhook":
-			err = alert.SlackIncomingWebhookConfig.fire(
-				fmt.Sprintf("%s: %s is online", c.Name, t.name()),
-			)
-		}
+			err := alert.SlackIncomingWebhookConfig.fire(message)
 
-		if err != nil {
-			log.Println(err)
+			if err != nil {
+				log.Println(err)
+			}
+		case "stdout":
+			log.Println(message)
+		default:
+			log.Printf("unsupported alert type: %s", alert.Type)
 		}
 	}
 }
