@@ -3,6 +3,7 @@ package healthcheck
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -15,22 +16,36 @@ type TargetInterface interface {
 }
 
 type Target struct {
-	Name   string
-	URL    string
+	Config *TargetJSON
 	Online bool
 }
 
 func (t *Target) name() string {
-	return t.Name
+	return t.Config.name()
 }
 
 func (t *Target) healthcheck() error {
-	resp, err := http.Get(t.URL)
-	if err != nil {
-		return errors.Wrapf(err, "%s Failed: %s", t.Name, t.URL)
+	var resp *http.Response
+	var err error
+
+	requestConfig := t.Config.httpRequestConfig()
+
+	switch requestConfig.Method {
+	case http.MethodPost:
+		resp, err = http.Post(
+			t.Config.url(),
+			requestConfig.ContentType,
+			strings.NewReader(requestConfig.Body),
+		)
+	default:
+		resp, err = http.Get(t.Config.url())
 	}
 
-	log.Printf("%s (%d): %s\n", t.Name, resp.StatusCode, t.URL)
+	if err != nil {
+		return errors.Wrapf(err, "%s Failed: %s", t.name(), t.Config.URL)
+	}
+
+	log.Printf("%s (%d): %s\n", t.name(), resp.StatusCode, t.Config.url())
 
 	return nil
 }

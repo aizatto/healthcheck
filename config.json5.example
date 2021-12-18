@@ -18,6 +18,11 @@
     {
       "valueFrom": "env",
       "key": "EXAMPLE_URL",
+      "httpRequestConfig": {
+        "method": "POST",
+        "contentType": "application/json",
+        "body": "{}"
+      }
     },
   ]
 }

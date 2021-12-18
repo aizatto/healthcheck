@@ -1,16 +1,33 @@
 package healthcheck
 
-import "os"
+import (
+	"net/http"
+	"os"
+)
 
-func (t TargetJSON) ToTarget() *Target {
+type TargetJSON struct {
+	Alerts            []AlertJSON        `json:"alerts"`
+	ValueFrom         string             `json:"valueFrom"`
+	Key               string             `json:"key"`
+	Name              string             `json:"name"`
+	URL               string             `json:"url"`
+	HttpRequestConfig *HttpRequestConfig `json:"httpRequestConfig"`
+}
+
+type HttpRequestConfig struct {
+	Method      string `json:"method"`
+	ContentType string `json:"contentType"`
+	Body        string `json:"body"`
+}
+
+func (t *TargetJSON) ToTarget() *Target {
 	return &Target{
-		Name:   t.name(),
-		URL:    t.url(),
+		Config: t,
 		Online: true, // asume everything is online by default
 	}
 }
 
-func (t TargetJSON) name() string {
+func (t *TargetJSON) name() string {
 	if len(t.Name) > 0 {
 		return t.Name
 	}
@@ -23,7 +40,7 @@ func (t TargetJSON) name() string {
 	return t.URL
 }
 
-func (t TargetJSON) url() string {
+func (t *TargetJSON) url() string {
 	url := ""
 	switch t.ValueFrom {
 	case "env":
@@ -33,4 +50,14 @@ func (t TargetJSON) url() string {
 	}
 
 	return url
+}
+
+func (t *TargetJSON) httpRequestConfig() *HttpRequestConfig {
+	if t.HttpRequestConfig == nil {
+		return &HttpRequestConfig{
+			Method: http.MethodGet,
+		}
+	}
+
+	return t.HttpRequestConfig
 }
