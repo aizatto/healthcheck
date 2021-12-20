@@ -13,7 +13,10 @@
   ],
   "targets": [
     {
-      "url": "http://www.example.com/"
+      "url": "http://www.example.com/",
+      "httpRequestConfig": {
+        "expectedResponseCode": 404
+      }
     },
     {
       "valueFrom": "env",
