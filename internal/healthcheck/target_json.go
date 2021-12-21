@@ -56,7 +56,8 @@ func (t *TargetJSON) url() string {
 func (t *TargetJSON) httpRequestConfig() *HttpRequestConfig {
 	if t.HttpRequestConfig == nil {
 		return &HttpRequestConfig{
-			Method: http.MethodGet,
+			Method:               http.MethodGet,
+			ExpectedResponseCode: http.StatusOK,
 		}
 	}
 
