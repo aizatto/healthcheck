@@ -44,6 +44,7 @@ func (t *Target) healthcheck() error {
 	if err != nil {
 		return errors.Wrapf(err, "%s Failed: %s", t.name(), t.Config.URL)
 	}
+	defer resp.Body.Close()
 
 	log.Printf("%s (%d): %s\n", t.name(), resp.StatusCode, t.Config.url())
 

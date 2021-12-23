@@ -38,6 +38,7 @@ func (s *SlackIncomingWebhookConfigJSON) fire(text string) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
