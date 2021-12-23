@@ -15,9 +15,10 @@ type TargetJSON struct {
 }
 
 type HttpRequestConfig struct {
-	Method      string `json:"method"`
-	ContentType string `json:"contentType"`
-	Body        string `json:"body"`
+	Method               string `json:"method"`
+	ContentType          string `json:"contentType"`
+	Body                 string `json:"body"`
+	ExpectedResponseCode int    `json:"expectedResponseCode"`
 }
 
 func (t *TargetJSON) ToTarget() *Target {
@@ -55,8 +56,13 @@ func (t *TargetJSON) url() string {
 func (t *TargetJSON) httpRequestConfig() *HttpRequestConfig {
 	if t.HttpRequestConfig == nil {
 		return &HttpRequestConfig{
-			Method: http.MethodGet,
+			Method:               http.MethodGet,
+			ExpectedResponseCode: http.StatusOK,
 		}
+	}
+
+	if t.HttpRequestConfig.ExpectedResponseCode == 0 {
+		t.HttpRequestConfig.ExpectedResponseCode = http.StatusOK
 	}
 
 	return t.HttpRequestConfig

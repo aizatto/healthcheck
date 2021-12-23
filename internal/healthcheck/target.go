@@ -1,6 +1,7 @@
 package healthcheck
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -45,6 +46,16 @@ func (t *Target) healthcheck() error {
 		return errors.Wrapf(err, "%s Failed: %s", t.name(), t.Config.URL)
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != t.Config.HttpRequestConfig.ExpectedResponseCode {
+		return fmt.Errorf(
+			"%s Failed: %s.\nUnexpected HTTP response code %d, expecting %d.",
+			t.name(),
+			t.Config.URL,
+			resp.StatusCode,
+			t.Config.HttpRequestConfig.ExpectedResponseCode,
+		)
+	}
 
 	log.Printf("%s (%d): %s\n", t.name(), resp.StatusCode, t.Config.url())
 
