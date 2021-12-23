@@ -5,6 +5,18 @@
       type: "stdout",
     },
     {
+      type: "rollbar",
+      "rollbarConfig": {
+        "environment": {
+          "value": "staging",
+        },
+        "token": {
+          "valueFrom": "env",
+          "key": "ROLLBAR_TOKEN",
+        }
+      }
+    },
+    {
       type: "slack-incoming-webhook",
       slackIncomingWebhookConfig: {
         url: "https://hooks.slack.com/services/",

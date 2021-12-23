@@ -26,6 +26,12 @@ func (c ConfigJSON) offline(t TargetInterface, targeterr error) {
 		)
 
 		switch alert.Type {
+		case "rollbar":
+			err := alert.RollbarConfig.fire(message)
+
+			if err != nil {
+				log.Println(err)
+			}
 		case "slack-incoming-webhook":
 			err := alert.SlackIncomingWebhookConfig.fire(message)
 
@@ -45,6 +51,13 @@ func (c ConfigJSON) online(t TargetInterface) {
 		message := fmt.Sprintf("%s: %s is online", c.Name, t.name())
 
 		switch alert.Type {
+		case "rollbar":
+			// doesn't make sense to fire a rollbar...
+			err := alert.RollbarConfig.fire(message)
+
+			if err != nil {
+				log.Println(err)
+			}
 		case "slack-incoming-webhook":
 			err := alert.SlackIncomingWebhookConfig.fire(message)
 
